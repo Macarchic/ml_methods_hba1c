@@ -12,12 +12,13 @@ class DatasetSpectra:
     def __init__(self, file_path, domain_path):
         try:
             self.data = pd.read_csv(file_path)
-            self.spectra = self.data.iloc[:, :-2].to_numpy()
+            self.spectra = self.data.iloc[:, :-3].to_numpy()
             self.n_samples = self.spectra.shape[0]
             self.n_features = self.spectra.shape[1]
             self.wavenumbers = pd.read_csv(domain_path).to_numpy().reshape(-1)
-            self.hba1c = self.data.iloc[:, -2].to_numpy()
-            self.age = self.data.iloc[:, -1].to_numpy()
+            self.hba1c = self.data.loc[:, 'HbA1c'].to_numpy()
+            self.age = self.data.loc[:, 'Age'].to_numpy()
+            self.sex = self.data.loc[:, 'Sex'].to_numpy()
         except Exception as e:
             print(f"The following error occured while loading the dataset: {e}")
 
@@ -25,7 +26,7 @@ class DatasetSpectra:
         return self.n_samples
     
     def __getitem__(self, key):
-        return self.spectra[key], self.hba1c[key], self.age[key]
+        return self.spectra[key], self.hba1c[key], self.age[key], self.sex[key]
     
     def __iter__(self):
         self.current_index = 0
